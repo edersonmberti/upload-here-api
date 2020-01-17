@@ -8,11 +8,9 @@ const upload = multer(uploadConfig);
 router.post("/", upload.single("image"), (req, res) => {
   if (!req.file) return res.status(404).send({ error: "Image not found" });
 
-  const { key: photo_key, location: image_url } = req.file;
+  const { key } = req.file;
 
-  if (!photo_key) {
-    image_url = `${process.env.APP_URL}/files/${this.photo_key}`;
-  }
+  image_url = `${process.env.APP_URL}/files/${key}`;
 
   return res.status(201).send({ image_url });
 });
