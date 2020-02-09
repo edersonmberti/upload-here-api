@@ -6,13 +6,17 @@ const uploadConfig = require("./upload");
 const upload = multer(uploadConfig);
 
 router.post("/", upload.single("image"), (req, res) => {
-  if (!req.file) return res.status(404).send({ error: "Image not found" });
+  try {
+    if (!req.file) throw "Image not found";
 
-  const { key } = req.file;
+    const { key, location = "" } = req.file;
 
-  image_url = `${process.env.APP_URL}/files/${key}`;
+    const imageUri = location || `${process.env.APP_URL}/files/${key}`;
 
-  return res.status(201).send({ image_url });
+    return res.status(201).send({ imageUri });
+  } catch (error) {
+    return res.status(400).send({ error });
+  }
 });
 
 router.get("/", (req, res) =>
